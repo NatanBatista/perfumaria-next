@@ -108,7 +108,7 @@ export function AuthProvider({ children }: Readonly<{
                     }
                 })
                 
-                destroyCookie(undefined, 'token');
+                destroyCookie(undefined, 'access-token');
                 destroyCookie(undefined, 'client');
                 destroyCookie(undefined, 'uid');
                 setUser(null)
