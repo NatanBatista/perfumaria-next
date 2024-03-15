@@ -1,11 +1,17 @@
 'use client'
 
+import { AuthContext } from "@/app/contexts/AuthContext"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { MoonIcon, SunIcon } from '@heroicons/react/24/solid'
 import { useTheme } from "next-themes"
+import Link from "next/link"
+import { useContext } from "react"
+
+import UserMenu from "./userMenu"
 
 const NavBar = () => {
+  const { isAuthenticated } = useContext(AuthContext)
   const { theme, setTheme } = useTheme()
 
   const toggleTheme = () => {
@@ -14,7 +20,7 @@ const NavBar = () => {
 
   return (
     <>
-      <div className="p-4">
+      <div className="container mx-auto p-4">
         <ul className="flex justify-between items-center">
           <p> Perfumaria </p>
           <div className="flex items-center gap-2">
@@ -25,10 +31,24 @@ const NavBar = () => {
                 <MoonIcon className="w-5 h-5" />
               )}
             </Button>
-            <div className="flex gap-2 ml-10">
-              <Button> Entrar </Button>
-              <Button> Registrar </Button>
-            </div>
+            {isAuthenticated ? (
+              <>
+                <UserMenu></UserMenu>
+              </>
+            ) : (
+              <>
+                <div className="flex gap-2 ml-10">
+                  <Link href="/auth/signin">
+                    <Button> Entrar </Button>
+                  </Link>
+
+                  <Link href={"/auth/signup"} >
+                    <Button> Registrar </Button>
+                  </Link>
+                </div>
+              </>
+            )}
+
           </div>
         </ul>
       </div>

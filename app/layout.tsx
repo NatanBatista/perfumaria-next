@@ -22,7 +22,7 @@ export default function RootLayout({
     <>
       <html lang="en" suppressHydrationWarning>
         <head />
-        <body className="container mx-auto">
+        <body className="">
           <AuthProvider>
           <ThemeProvider
             attribute="class"
