@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/navbar/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
+import { AuthProvider } from "./contexts/AuthContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +23,7 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <head />
         <body className="container mx-auto">
+          <AuthProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -29,7 +32,9 @@ export default function RootLayout({
           >
             <NavBar />
             {children}
+            <Toaster />
           </ThemeProvider>
+          </AuthProvider>
         </body>
       </html>
     </>
