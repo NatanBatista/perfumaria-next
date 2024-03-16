@@ -24,7 +24,7 @@ import { useContext } from "react"
 import { AuthContext } from "@/app/contexts/AuthContext"
 
 const UserMenu = () => {
-    const { signOut } = useContext(AuthContext)
+    const { signOut, user } = useContext(AuthContext)
 
     const handleSignOut = async () => {
         await signOut()
@@ -35,8 +35,8 @@ const UserMenu = () => {
                 <DropdownMenuTrigger asChild>
                     <Button variant="clean">
                         <Avatar>
-                            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-                            <AvatarFallback>CN</AvatarFallback>
+                            {/* <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" /> */}
+                            <AvatarFallback>{user?.nickname.slice(0,2)}</AvatarFallback>
                         </Avatar>
                     </Button>
                 </DropdownMenuTrigger>
