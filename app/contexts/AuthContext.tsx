@@ -2,6 +2,7 @@
 import { createContext, useEffect, useState } from "react";
 import { setCookie, parseCookies, destroyCookie } from "nookies"
 import { useRouter } from 'next/navigation'
+import { useToast } from "@/components/ui/use-toast";
 import axios from "axios"
 
 export const AuthContext = createContext({} as AuthContextType)
@@ -19,6 +20,7 @@ type AuthContextType = {
     signIn: (data: SignInData) => Promise<void>
     signOut: () => Promise<void>
     user: User | null
+    isLoading: boolean
 }
 
 type SignInData = {
@@ -26,16 +28,17 @@ type SignInData = {
     password: string
 }
 
-
 export function AuthProvider({ children }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const { toast } = useToast()
     const router = useRouter()
-    const [user, setUser] = useState<User | null>(null)
 
+    const [user, setUser] = useState<User | null>(null)
+    const [isLoading, setIsLoading] = useState(false)
     const isAuthenticated = !!user
 
-    useEffect(() => {
+    useEffect(() => { // Função para validar usuário logado ou não ao entrar no sistema
         const fetchData = async () => {
             const {
                 "access-token": token,
@@ -53,9 +56,8 @@ export function AuthProvider({ children }: Readonly<{
                         }
                     })
 
-                    setUser(response.data.data)
+                    setUser(response.data.data) // Retorna os dados básicos do usuario e salva
                 } catch (error) {
-                    console.error('Error ao validar token:', error);
                     throw error;
                 }
             }
@@ -65,31 +67,36 @@ export function AuthProvider({ children }: Readonly<{
 
     async function signIn({ email, password }: SignInData) {
         try {
-            const response = await axios.post('http://localhost:3001/auth/sign_in',
-                { // Envia o email e senha para o endpoint do backend
-                    email,
-                    password,
-                }
-            )
+            setIsLoading(true)
+            const response = await axios.post('http://localhost:3001/auth/sign_in', {
+                email,
+                password,
+            });
+
             setCookie(undefined, "access-token", response.headers["access-token"], {
                 maxAge: 60 * 60 * 1 // 1 hora
-            })
+            });
             setCookie(undefined, "client", response.headers["client"], {
                 maxAge: 60 * 60 * 1 // 1 hora
-            })
+            });
             setCookie(undefined, "uid", response.headers["uid"], {
                 maxAge: 60 * 60 * 1 // 1 hora
+            });
+
+            setUser(response.data.data);
+            router.push('/');
+        } catch (error: any) {
+            toast({
+                variant: "destructive",
+                title: error.response.data.errors[0],
+                description: "Email ou senha incorretos!",
             })
-
-            setUser(response.data.data)
-            console.log("data", response)
-
-            router.push('/')
-        } catch (error) {
-            console.error('Erro ao fazer login:', error);
-            throw error;
+        } finally {
+            setIsLoading(false)
         }
+
     }
+
 
     async function signOut() {
         const {
@@ -107,13 +114,14 @@ export function AuthProvider({ children }: Readonly<{
                         "uid": uid,
                     }
                 })
-                
+
                 destroyCookie(undefined, 'access-token');
                 destroyCookie(undefined, 'client');
                 destroyCookie(undefined, 'uid');
                 setUser(null)
+
+                router.push("/")
             } catch (error) {
-                console.error('Erro ao encerrar sessão:', error);
                 throw error;
             }
         }
@@ -121,7 +129,8 @@ export function AuthProvider({ children }: Readonly<{
 
     return (
         <AuthContext.Provider value={{
-            isAuthenticated, signIn, signOut, user
+            isAuthenticated, signIn, signOut, user,
+            isLoading
         }}>
             {children}
         </AuthContext.Provider>
