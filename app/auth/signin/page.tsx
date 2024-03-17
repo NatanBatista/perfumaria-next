@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
+import { ReloadIcon } from "@radix-ui/react-icons"
+
 import {
     Form,
     FormControl,
@@ -28,7 +30,7 @@ const FormSchema = z.object({
 })
 
 const SignIn = () => {
-    const { signIn } = useContext(AuthContext)
+    const { signIn, isLoading } = useContext(AuthContext)
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -69,14 +71,24 @@ const SignIn = () => {
                             <FormItem>
                                 <FormLabel>Senha</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="senha" {...field} />
+                                    <Input type="password" placeholder="senha" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
 
                         )}
                     />
-                    <Button type="submit">Submit</Button>
+                    {isLoading ? (
+                        <Button >
+                            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                            Entrando...
+                        </Button>
+                    ) :
+                        (
+                            <Button type="submit">
+                                Entrar
+                            </Button>
+                        )}
                 </form>
             </Form>
         </div>
