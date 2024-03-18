@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { Button } from "../ui/button"
 import { Separator } from "../ui/separator"
 
@@ -5,6 +6,7 @@ import {
     Card,
     CardContent,
     CardDescription,
+    CardHeader,
     CardTitle
 } from "../ui/card"
 import {
@@ -19,8 +21,14 @@ type HomeCardProps = {
     name: string
     link: string
     data: {
+        id: number
         title: string
         description: string
+        created_at?: Date
+        update_at?: Date
+        image?: {
+            url: string
+        }
     }[]
 }
 
@@ -33,7 +41,7 @@ const HomeCard: React.FC<HomeCardProps> = ({
 }) => {
     return (
         <>
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center mt-4">
                 <h1 className="font-bold text-2xl pl-36"> {name} </h1>
                 <Link href={link}>
                     <Button variant="clean">
@@ -43,18 +51,24 @@ const HomeCard: React.FC<HomeCardProps> = ({
             </div>
             <Separator className="my-4" />
             <div className="flex justify-center">
-                <Carousel className="w-full max-w-5xl">
+                <Carousel className="w-full md:max-w-5xl">
                     <CarouselContent>
                         {data.map((i, index) => (
-                            <CarouselItem key={index} className="basis-1/3">
-                                <Card>
+                            <CarouselItem key={index} className="basis:1/2 md:basis-1/3">
+                                <Card className="md:h-96">
                                     <CardContent className="flex flex-col aspect-square items-center justify-center p-6">
-                                        <CardTitle>
-                                            {i.title}
-                                        </CardTitle>
-                                        <CardDescription>
-                                            {i.description}
-                                        </CardDescription>
+                                        <CardHeader className="w-64 h-64 overflow-hidden">
+                                        <img className="object-cover w-full h-full" src={`${process.env.NEXT_PUBLIC_API_URL}/${i.image?.url}`} alt={i.title} />
+
+                                        </CardHeader>
+                                        <div className="">
+                                            <CardTitle >
+                                                {i.title}
+                                            </CardTitle>
+                                            <CardDescription className="">
+                                                {i.description.slice(0,96)}
+                                            </CardDescription>
+                                        </div>
                                     </CardContent>
                                 </Card>
                             </CarouselItem>

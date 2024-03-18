@@ -28,6 +28,7 @@ type SignInData = {
     password: string
 }
 
+
 export function AuthProvider({ children }: Readonly<{
     children: React.ReactNode;
 }>) {
@@ -48,7 +49,7 @@ export function AuthProvider({ children }: Readonly<{
 
             if (token && client && uid) {
                 try {
-                    const response = await axios.get("http://localhost:3001/auth/validate_token", {
+                    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/validate_token`, {
                         headers: {
                             "access-token": token,
                             "client": client,
@@ -68,7 +69,7 @@ export function AuthProvider({ children }: Readonly<{
     async function signIn({ email, password }: SignInData) {
         try {
             setIsLoading(true)
-            const response = await axios.post('http://localhost:3001/auth/sign_in', {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/sign_in`, {
                 email,
                 password,
             });
@@ -107,7 +108,7 @@ export function AuthProvider({ children }: Readonly<{
 
         if (token && client && uid) {
             try {
-                await axios.delete("http://localhost:3001/auth/sign_out", {
+                await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/auth/sign_out`, {
                     headers: {
                         "access-token": token,
                         "client": client,

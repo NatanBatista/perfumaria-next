@@ -61,7 +61,7 @@ const SignUp = () => {
     async function onSubmit(data: z.infer<typeof FormSchema>) {
         try {
             setIsLoading(true)
-            const response = await axios.post("http://localhost:3001/auth", {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth`, {
                 "email": data.email,
                 "nickname": data.nickname,
                 "password": data.password,
