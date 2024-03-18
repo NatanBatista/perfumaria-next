@@ -74,13 +74,13 @@ export function AuthProvider({ children }: Readonly<{
             });
 
             setCookie(undefined, "access-token", response.headers["access-token"], {
-                maxAge: 60 * 60 * 1 // 1 hora
+                maxAge: 60 * 60 * 24 * 2 // 2 dias
             });
             setCookie(undefined, "client", response.headers["client"], {
-                maxAge: 60 * 60 * 1 // 1 hora
+                maxAge: 60 * 60 * 24 * 2 // 2 dias
             });
             setCookie(undefined, "uid", response.headers["uid"], {
-                maxAge: 60 * 60 * 1 // 1 hora
+                maxAge: 60 * 60 * 24 * 2 // 2 dias
             });
 
             setUser(response.data.data);
