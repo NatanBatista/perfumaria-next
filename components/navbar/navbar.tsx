@@ -22,7 +22,7 @@ const NavBar = () => {
     <>
       <div className="container mx-auto p-4">
         <ul className="flex justify-between items-center">
-          <p> Perfumaria </p>
+          <h1 className="text-2xl font-bold"> Perfumaria </h1>
           <div className="flex items-center gap-2">
             <Button variant="clean" onClick={toggleTheme}>
               {theme === 'light' ? (
@@ -52,7 +52,7 @@ const NavBar = () => {
           </div>
         </ul>
       </div>
-      <Separator />
+      <Separator className="mb-10"/>
     </>
   )
 }
