@@ -41,20 +41,24 @@ const Home = async () => {
   ]
 
   const handleFetchArticles = async () => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/articles3`)
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/articles10`)
 
-    if (!res.ok) {
-      throw new Error("Falha fetch data")
+      if (!res.ok) {
+        throw new Error("Falha fetch data")
+      }
+
+      return res.json()
+    } catch (error) {
+      return []
     }
-
-    return res.json()
   }
 
   const articles: Articles = await handleFetchArticles()
   return (
     <>
       <div className="container">
-        <HomeCard name="Notícias" link="/articles" data={articles} />
+        <HomeCard name="Notícias" link="/articles" data={articles}/>
       </div>
     </>
   )
