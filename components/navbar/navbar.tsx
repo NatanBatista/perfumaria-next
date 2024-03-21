@@ -9,6 +9,7 @@ import Link from "next/link"
 import { useContext } from "react"
 
 import UserMenu from "./userMenu"
+import { NavBarMenu } from "./NavBarMenu"
 
 const NavBar = () => {
   const { isAuthenticated } = useContext(AuthContext)
@@ -52,7 +53,11 @@ const NavBar = () => {
           </div>
         </ul>
       </div>
+      <div className="flex justify-center">
+      <NavBarMenu />
+      </div>
       <Separator className="mb-10"/>
+
     </>
   )
 }
