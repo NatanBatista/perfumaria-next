@@ -3,13 +3,14 @@
 import { AuthContext } from "@/app/contexts/AuthContext"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { MoonIcon, SunIcon } from '@heroicons/react/24/solid'
+import { Bars3Icon, MoonIcon, SunIcon } from '@heroicons/react/24/solid'
 import { useTheme } from "next-themes"
 import Link from "next/link"
 import { useContext } from "react"
 
 import UserMenu from "./userMenu"
 import { NavBarMenu } from "./NavBarMenu"
+import SlideBar from "./slidebar"
 
 const NavBar = () => {
   const { isAuthenticated } = useContext(AuthContext)
@@ -23,6 +24,9 @@ const NavBar = () => {
     <>
       <div className="container mx-auto p-4">
         <ul className="flex justify-between items-center">
+          <div className="sm:hidden" >
+           <SlideBar />
+          </div>
           <h1 className="text-2xl font-bold"> Perfumaria </h1>
           <div className="flex items-center gap-2">
             <Button variant="clean" onClick={toggleTheme}>
@@ -53,8 +57,10 @@ const NavBar = () => {
           </div>
         </ul>
       </div>
-      <div className="flex justify-center">
-      <NavBarMenu />
+      <div className="hidden sm:flex justify-center ">
+      <div>
+      <NavBarMenu/>
+      </div>
       </div>
       <Separator className="mb-10"/>
 
