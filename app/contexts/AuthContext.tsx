@@ -4,6 +4,7 @@ import { setCookie, parseCookies, destroyCookie } from "nookies"
 import { useRouter } from 'next/navigation'
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios"
+import { api } from "@/services/axios";
 
 export const AuthContext = createContext({} as AuthContextType)
 
@@ -83,6 +84,12 @@ export function AuthProvider({ children }: Readonly<{
             setCookie(undefined, "uid", response.headers["uid"], {
                 maxAge: 60 * 60 * 24 * 2 // 2 dias
             });
+
+            
+            // Atualiza os cookies do axios ao logar
+            api.defaults.headers['access-token'] = response.headers["access-token"]
+            api.defaults.headers['client'] = response.headers["client"]
+            api.defaults.headers['uid'] = response.headers["uid"]
 
             setUser(response.data.data);
             router.push('/');
