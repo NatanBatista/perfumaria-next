@@ -3,14 +3,13 @@ interface Article {
   id: number
   title: string
   description: string
-  created_at: Date
-  update_at: Date
-  image: {
+  created_at?: Date
+  update_at?: Date
+  image?: {
     url: string
   }
 }
 
-type Articles = Article[]
 /* eslint-disable @next/next/no-img-element */
 const Home = async () => {
   const algo = [
@@ -54,11 +53,11 @@ const Home = async () => {
     }
   }
 
-  const articles: Articles = await handleFetchArticles()
+  const articles: Article[] = await handleFetchArticles()
   return (
     <>
       <div className="container">
-        <HomeCard name="Notícias" link="/articles" data={articles}/>
+        <HomeCard name="Notícias" link="/articles" data={articles} />
       </div>
     </>
   )
