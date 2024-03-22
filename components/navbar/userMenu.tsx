@@ -16,9 +16,10 @@ import {
 import {
     Avatar,
     AvatarFallback,
-    AvatarImage
+    // AvatarImage
 } from "../ui/avatar"
 
+import React from "react"
 import { Button } from "../ui/button"
 import { useContext } from "react"
 import { AuthContext } from "@/app/contexts/AuthContext"

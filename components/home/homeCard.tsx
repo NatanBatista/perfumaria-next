@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { Button } from "../ui/button"
 import { Separator } from "../ui/separator"
 
@@ -56,24 +55,26 @@ const HomeCard: React.FC<HomeCardProps> = ({
                     <Carousel className="w-full md:max-w-5xl">
                         <CarouselContent>
                             {data.map((i, index) => (
-                                <CarouselItem key={index} className="basis:1/2 md:basis-1/3">
-                                    <Card className="md:h-96">
-                                        <CardContent className="flex flex-col aspect-square items-center justify-center p-6">
-                                            <CardHeader className="w-64 h-64 overflow-hidden">
-                                                <img className="object-cover w-full h-full" src={`${process.env.NEXT_PUBLIC_API_URL}/${i.image?.url}`} alt={i.title} />
+                                <Link key={index} href={`articles/${i.id}`}>
+                                    <CarouselItem className="basis:1/2 md:basis-1/3">
+                                        <Card className="md:h-96">
+                                            <CardContent className="flex flex-col aspect-square items-center justify-center p-6">
+                                                <CardHeader className="w-64 h-64 overflow-hidden">
+                                                    <img className="object-cover w-full h-full" src={`${process.env.NEXT_PUBLIC_API_URL}/${i.image?.url}`} alt={i.title} />
 
-                                            </CardHeader>
-                                            <div className="">
-                                                <CardTitle >
-                                                    {i.title}
-                                                </CardTitle>
-                                                <CardDescription className="">
-                                                    {i.description.slice(0, 96)}
-                                                </CardDescription>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                </CarouselItem>
+                                                </CardHeader>
+                                                <div className="">
+                                                    <CardTitle >
+                                                        {i.title}
+                                                    </CardTitle>
+                                                    <CardDescription className="">
+                                                        {i.description.slice(0, 96)}
+                                                    </CardDescription>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    </CarouselItem>
+                                </Link>
                             ))}
                         </CarouselContent>
                         <CarouselPrevious />
@@ -88,7 +89,7 @@ const HomeCard: React.FC<HomeCardProps> = ({
                                         <Card className="md:h-96">
                                             <CardContent className="flex flex-col aspect-square items-center justify-center p-6">
                                                 <CardHeader className="w-64 h-64 overflow-hidden">
-                                                <Skeleton className="w-full h-full" />
+                                                    <Skeleton className="w-full h-full" />
                                                 </CardHeader>
                                                 <div className="">
                                                     <CardTitle >

@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
+import React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -40,7 +42,7 @@ const FormSchema = z.object({
     }),
 }).refine(data => data.password === data.password_confirmation, {
     message: "As senhas não coincidem",
-    path: ['password_confirmation']
+    path: ["password_confirmation"]
 })
 
 const SignUp = () => {

@@ -1,9 +1,9 @@
-/* eslint-disable @next/next/no-img-element */
-'use client'
+"use client"
 
 import ArticlesComments from "@/components/articles/comments"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import axios from "axios"
+import React from "react"
 import { useEffect, useState } from "react"
 
 type ArticlesPageProps = {

@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react"
 import { setCookie, parseCookies, destroyCookie } from "nookies"
-import { useRouter } from 'next/navigation'
-import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation"
+import { useToast } from "@/components/ui/use-toast"
 import axios from "axios"
-import { api } from "@/services/axios";
+import { api } from "@/services/axios"
+import React from "react"
 
 export const AuthContext = createContext({} as AuthContextType)
 
@@ -17,7 +19,7 @@ type User = {
 }
 
 type AuthContextType = {
-    isAuthenticated: Boolean
+    isAuthenticated: boolean
     signIn: (data: SignInData) => Promise<void>
     signOut: () => Promise<void>
     user: User | null
@@ -49,19 +51,16 @@ export function AuthProvider({ children }: Readonly<{
             } = parseCookies()
 
             if (token && client && uid) {
-                try {
-                    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/validate_token`, {
-                        headers: {
-                            "access-token": token,
-                            "client": client,
-                            "uid": uid
-                        }
-                    })
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/validate_token`, {
+                    headers: {
+                        "access-token": token,
+                        "client": client,
+                        "uid": uid
+                    }
+                })
 
-                    setUser(response.data.data) // Retorna os dados básicos do usuario e salva
-                } catch (error) {
-                    throw error;
-                }
+                setUser(response.data.data) // Retorna os dados básicos do usuario e salva
+    
             }
         }
         fetchData()
@@ -73,26 +72,26 @@ export function AuthProvider({ children }: Readonly<{
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/sign_in`, {
                 email,
                 password,
-            });
+            })
 
             setCookie(undefined, "access-token", response.headers["access-token"], {
                 maxAge: 60 * 60 * 24 * 2 // 2 dias
-            });
+            })
             setCookie(undefined, "client", response.headers["client"], {
                 maxAge: 60 * 60 * 24 * 2 // 2 dias
-            });
+            })
             setCookie(undefined, "uid", response.headers["uid"], {
                 maxAge: 60 * 60 * 24 * 2 // 2 dias
-            });
+            })
 
             
             // Atualiza os cookies do axios ao logar
-            api.defaults.headers['access-token'] = response.headers["access-token"]
-            api.defaults.headers['client'] = response.headers["client"]
-            api.defaults.headers['uid'] = response.headers["uid"]
+            api.defaults.headers["access-token"] = response.headers["access-token"]
+            api.defaults.headers["client"] = response.headers["client"]
+            api.defaults.headers["uid"] = response.headers["uid"]
 
-            setUser(response.data.data);
-            router.push('/');
+            setUser(response.data.data)
+            router.push("/")
         } catch (error: any) {
             toast({
                 variant: "destructive",
@@ -114,24 +113,21 @@ export function AuthProvider({ children }: Readonly<{
         } = parseCookies()
 
         if (token && client && uid) {
-            try {
-                await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/auth/sign_out`, {
-                    headers: {
-                        "access-token": token,
-                        "client": client,
-                        "uid": uid,
-                    }
-                })
+            await api.delete(`${process.env.NEXT_PUBLIC_API_URL}/auth/sign_out`, {
+                headers: {
+                    "access-token": token,
+                    "client": client,
+                    "uid": uid,
+                }
+            })
 
-                destroyCookie(undefined, 'access-token');
-                destroyCookie(undefined, 'client');
-                destroyCookie(undefined, 'uid');
-                setUser(null)
+            destroyCookie(undefined, "access-token")
+            destroyCookie(undefined, "client")
+            destroyCookie(undefined, "uid")
+            setUser(null)
 
-                router.push("/")
-            } catch (error) {
-                throw error;
-            }
+            router.push("/")
+
         }
     }
 
