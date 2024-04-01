@@ -1,7 +1,6 @@
 "use client"
 
-import React from "react"
-import { useContext } from "react"
+import React, { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -19,32 +18,40 @@ import {
 } from "@/components/ui/form"
 
 import { Input } from "@/components/ui/input"
-import { AuthContext } from "@/app/contexts/AuthContext"
-import Link from "next/link"
+import { api } from "@/services/axios"
 
 const FormSchema = z.object({
-    email: z.string().email({
-        message: "Email incorreto."
+    password: z.string().min(8, {
+        message: "A senha deve ter pelo menos 8 caracteres",
     }),
-    password: z.string().min(3, {
-        message: "A senha deve ter pelo menos 3 caracteres",
+    password_confirmation: z.string().min(8,{
+        message: "A confirmação senha deve ter pelo menos 8 caracteres",
     }),
+}).refine(data => data.password === data.password_confirmation, {
+    message: "As senhas não coincidem",
+    path: ["password_confirmation"]
 })
 
-const SignIn = () => {
-    const { signIn, isLoading } = useContext(AuthContext)
+const ResetPassword = () => {
+    const [isLoading, setIsLoading] = useState(false)
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            email: "",
             password: "",
+            password_confirmation: "",
         },
     })
 
     async function onSubmit(data: z.infer<typeof FormSchema>) {
-        await signIn(data)
-        // console.log(JSON.stringify(data, null, 2))
+        try {
+            setIsLoading(true)
+            await api.put("auth/password/edit", {
+                "password": data.password
+            })
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     return (
@@ -54,7 +61,7 @@ const SignIn = () => {
 
                     <FormField
                         control={form.control}
-                        name="email"
+                        name="password"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>E-mail</FormLabel>
@@ -68,30 +75,27 @@ const SignIn = () => {
                     />
                     <FormField
                         control={form.control}
-                        name="password"
+                        name="password_confirmation"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Senha</FormLabel>
                                 <FormControl>
-                                    <Input type="password" placeholder="senha" {...field} />
+                                    <Input type="password" placeholder="Confirmar senha" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
 
                         )}
                     />
-                    <div className="flex justify-end">
-                        <Link className="tracking-tight text-xs underline" href={"/auth/forgot-password"} > esqueceu a senha?</Link>
-                    </div>
                     {isLoading ? (
                         <Button >
                             <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                            Entrando...
+                            Alterando...
                         </Button>
                     ) :
                         (
                             <Button type="submit">
-                                Entrar
+                                Alterar
                             </Button>
                         )}
                 </form>
@@ -100,4 +104,4 @@ const SignIn = () => {
     )
 }
 
-export default SignIn
+export default ResetPassword
