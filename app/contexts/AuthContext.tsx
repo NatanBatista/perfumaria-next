@@ -93,11 +93,16 @@ export function AuthProvider({ children }: Readonly<{
             setUser(response.data.data)
             router.push("/")
         } catch (error: any) {
-            toast({
-                variant: "destructive",
-                title: error.response.data.errors[0],
-                description: "Email ou senha incorretos!",
-            })
+            const errors = error.response.data.errors
+            if (errors) {
+                errors.forEach((message: string) => {
+                    toast({
+                        variant: "destructive",
+                        title: "Erro",
+                        description: message,
+                    })
+                })
+            }
         } finally {
             setIsLoading(false)
         }

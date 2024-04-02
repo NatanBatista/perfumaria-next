@@ -78,11 +78,18 @@ const SignUp = () => {
                 }`
             })
         } catch (error: any) {
-            toast({
-                variant: "destructive",
-                title: error.response.data.errors[0],
-            })
-        } finally {
+            const errors = error.response.data.errors
+            if (errors.full_messages) {
+                errors.full_messages.forEach((message: string) => {
+                    toast({
+                        variant: "destructive",
+                        title: "Erro",
+                        description: message,
+                    })
+                })
+            }
+        } 
+        finally {
             setIsLoading(false)
         }
 

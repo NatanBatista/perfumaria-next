@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import React from "react"
@@ -20,6 +21,7 @@ import {
 
 import { Input } from "@/components/ui/input"
 import { api } from "@/services/axios"
+import { toast } from "@/components/ui/use-toast"
 
 const FormSchema = z.object({
     email: z.string().email({
@@ -37,9 +39,23 @@ const ForgotPassword = () => {
     })
 
     async function ForgotPassword(data: z.infer<typeof FormSchema>) {
-        await api.post("auth/password", {
-            "email": data.email
-        })
+        try {
+            await api.post("auth/password", {
+                "email": data.email
+            })
+
+        } catch (error: any) {
+            const errors = error.response.data.errors
+            if (errors) {
+                errors.forEach((message: string) => {
+                    toast({
+                        variant: "destructive",
+                        title: "Erro",
+                        description: message,
+                    })
+                })
+            }
+        }
     }
 
     return (
