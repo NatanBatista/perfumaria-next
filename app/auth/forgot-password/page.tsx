@@ -2,6 +2,7 @@
 "use client"
 
 import React from "react"
+import { useRouter } from "next/navigation"
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -30,7 +31,7 @@ const FormSchema = z.object({
 })
 
 const ForgotPassword = () => {
-
+    const router = useRouter()
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
@@ -40,10 +41,17 @@ const ForgotPassword = () => {
 
     async function ForgotPassword(data: z.infer<typeof FormSchema>) {
         try {
-            await api.post("auth/password", {
+            const response = await api.post("auth/password", {
                 "email": data.email
             })
+            router.push("/auth/signin")
 
+            toast({
+                variant: "default",
+                title: "Email enviado com sucesso!",
+                description: response.data.message
+
+            })
         } catch (error: any) {
             const errors = error.response.data.errors
             if (errors) {
