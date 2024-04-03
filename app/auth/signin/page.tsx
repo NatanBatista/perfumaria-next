@@ -81,7 +81,7 @@ const SignIn = () => {
                         )}
                     />
                     <div className="flex justify-end">
-                        <Link className="tracking-tight text-xs underline" href={"/auth/forgot-password"} > esqueceu a senha?</Link>
+                        <Link className="tracking-tight text-xs underline hover:text-gray-300" href={"/auth/forgot-password"} > esqueceu a senha?</Link>
                     </div>
                     {isLoading ? (
                         <Button >
