@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import React, { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useSearchParams, useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -19,6 +21,7 @@ import {
 
 import { Input } from "@/components/ui/input"
 import { api } from "@/services/axios"
+import { toast } from "@/components/ui/use-toast"
 
 const FormSchema = z.object({
     password: z.string().min(8, {
@@ -32,9 +35,15 @@ const FormSchema = z.object({
     path: ["password_confirmation"]
 })
 
-const ResetPassword = () => {
+const ResetPassword = () => { //
     const [isLoading, setIsLoading] = useState(false)
+    const router = useRouter()
 
+    const searchParams = useSearchParams()
+    const accessToken = searchParams.get("access-token")
+    const client = searchParams.get("client")
+    const uid = searchParams.get("uid")
+    
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
@@ -46,14 +55,46 @@ const ResetPassword = () => {
     async function onSubmit(data: z.infer<typeof FormSchema>) {
         try {
             setIsLoading(true)
-            await api.put("auth/password/edit", {
-                "password": data.password
+            const response = await api.put("/auth/password", {
+                "password": data.password,
+                "password_confirmation": data.password_confirmation
+            },
+            {
+                headers: {
+                    "access-token": accessToken,
+                    "client": client,
+                    "uid": uid,
+                },
             })
-        } catch (error) {
+            router.replace("/auth/signin")
+            toast({
+                variant: "default",
+                title:"Success",
+                description: response.data.message
+            })
+        } catch (error: any) {
             console.error(error)
+            const errors = error.response.data.errors
+            if (errors.full_messages) {
+                toast({
+                    variant: "destructive",
+                    title: "Erro",
+                    description: "Se você recebeu um e-mail para redefinir sua senha, por favor, certifique-se de estar usando a URL correta",
+                })
+            }
+            else {
+                errors.forEach((message: string) => {
+                    toast({
+                        variant: "destructive",
+                        title: "Erro",
+                        description: message,
+                    })
+                })
+            }
+        } finally {
+            setIsLoading(false)
         }
     }
-
     return (
         <div className="flex justify-center items-center my-10">
             <Form {...form}>
@@ -64,9 +105,9 @@ const ResetPassword = () => {
                         name="password"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>E-mail</FormLabel>
+                                <FormLabel>Senha</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="e-mail" {...field} />
+                                    <Input type="password" placeholder="Senha" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -78,7 +119,7 @@ const ResetPassword = () => {
                         name="password_confirmation"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Senha</FormLabel>
+                                <FormLabel>Confirmação de senha</FormLabel>
                                 <FormControl>
                                     <Input type="password" placeholder="Confirmar senha" {...field} />
                                 </FormControl>
