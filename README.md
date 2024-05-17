@@ -39,3 +39,4 @@ Este é um site de perfumaria construído utilizando Next.js. Oferece uma plataf
     https://github.com/NatanBatista/perfumaria-api
 
 
+By Natan
